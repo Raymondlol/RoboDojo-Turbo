@@ -2,7 +2,7 @@
 
 [![eval wall-clock: 1.4-2.4x faster on 4 tasks](https://img.shields.io/badge/eval_wall--clock-1.4%E2%80%932.4%C3%97_faster_(4_tasks)-0969da)](#measured-so-far)
 [![replay physics: bit-identical on stack_blocks](https://img.shields.io/badge/replay_physics-bit--identical_(stack__blocks)-2da44e)](docs/validation.md)
-[![eval protocol: unchanged](https://img.shields.io/badge/eval_protocol-unchanged-2da44e)](#what-it-does)
+[![eval protocol: unchanged](https://img.shields.io/badge/eval_protocol-unchanged-2da44e)](#how-it-works)
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![status: alpha](https://img.shields.io/badge/status-alpha-orange)](docs/STATUS.md)
 
@@ -31,15 +31,60 @@ system.</sub>
 
 > Status: pre-release preview (CHANGELOG.md). Timed with this code on one machine and four tasks, scores compared on one task; see Known limitations and [docs/STATUS.md](docs/STATUS.md).
 
-## What it does
+## How it works
 
-RoboDojo evaluates a policy in Isaac Sim: an Isaac client runs 10 parallel environments per GPU, renders three cameras,
-and talks to a policy server over a websocket. RoboDojo-Turbo patches a local RoboDojo checkout in place so the same
-evaluation finishes sooner without changing physics, dt or render cadence (bit-identical PhysX state under open-loop
-replay where tested; see [docs/validation.md](docs/validation.md)). One known exception concerns what is rendered:
-`RDTURBO_USD_LAST` can leave bodies that fall asleep during an action slightly stale in the USD scene that the cameras
-and some scorers read (Known limitations). The recommended preset also records only the head-camera video, with x264
-`ultrafast`.
+**Where the time goes.** A RoboDojo evaluation is one loop in an Isaac Sim process. For every action step, PhysX advances
+all 10 environments by a few substeps, three cameras are rendered, an observation is assembled and sent to the policy
+server, and every 50 steps the policy returns the next chunk of actions. Physics and rendering run on the GPU, but the
+loop around them runs in Python on a single CPU thread: after every substep it writes each body's pose back into the USD
+scene (and UI listeners that a headless run never shows react to every write), it copies control dictionaries and
+observations, and it assembles and uploads images the policy does not read. That thread, not the GPU, sets the pace.
+
+```mermaid
+flowchart LR
+    P["policy server (Pi_05)"] -->|"action chunk, every 50 steps"| A
+    subgraph S["Isaac Sim client: every action step, 10 environments"]
+        direction LR
+        A["PhysX substeps"] --> W["write poses back to USD<br/>Turbo: once per action, not after every substep"]
+        W --> R["render 3 cameras<br/>unchanged"]
+        R --> O["assemble observation<br/>Turbo: full observation only at chunk starts"]
+    end
+    O -->|"upload<br/>Turbo: only at chunk starts"| P
+```
+
+**What RoboDojo-Turbo removes.** Only work on that CPU thread that is not meant to change what is simulated, what the
+policy is shown at the steps it acts on, or what is scored (one known exception is listed below):
+
+| upstream spends time on | RoboDojo-Turbo | measured effect (`stack_blocks`, 10 envs) |
+|---|---|---|
+| uploading the raw images of 10 envs x 3 cameras on every step (~27.6 MB), although Pi_05 reads only the observation at each chunk start | upload at chunk starts only; frames in between are still rendered, for the video | whole evaluation 636 -> 546 s with the harness preset (this, the lossless fast path below and one camera video) |
+| writing every pose back to USD after every physics substep, and five UI-only listeners reacting to each write | write back once per action, before anything reads the scene (the last substep is kept for fluids and cloth); revoke the UI listeners | physics step 148 -> 51 ms |
+| assembling a full observation on steps that only feed the video, and RGBA readout | read out only the recorded cameras on those steps, 3-channel readout | observation step 112 -> 80 ms |
+| deep copies and duplicate recomputation of controls, observations and joint targets | lossless removal, each checked byte for byte against the original path | part of the two rows above |
+| building the unused motion planner, fetching NVIDIA assets online, garbage-collection pauses, video encoding | skip the planner for joint actions, local asset mirror, `gc.freeze`, lighter video settings | start-up, memory (about 1.8 GB VRAM per process) |
+| rendering | unchanged | 82 -> 80 ms per step |
+
+Step times are per action step from the span traces of the benchmark runs, harness vs full preset (the unpatched arm is
+not traced); the numbers behind every row are in [docs/switches.md](docs/switches.md) and `docs/data/benchmark.json`.
+
+**What stays the same.** Tasks, official layouts, checkpoints and scoring code; physics settings, `dt` and substeps; every
+frame is rendered. Known differences: the recommended preset records one camera video instead of three (videos are not
+scored), and bodies that fall asleep during an action can be up to 1.2 mm stale in the rendered scene
+([Known limitations](#known-limitations)).
+
+**How it is applied.** `python -m robodojo_turbo apply` rewrites 13 files of your own RoboDojo checkout at regex anchors
+and installs three helper modules; it refuses unless each file matches the pinned upstream version (RoboDojo 726e9aa,
+XPolicyLab bb9a0b5) byte for byte. Every change sits behind an `RDTURBO_*` switch that is off unless you set it, so a
+patched tree with no switches behaves like upstream, and `revert` restores the original files byte for byte. This
+repository carries no upstream source beyond what the patches need: single-line regex anchors, a few re-implemented
+RoboDojo expressions, and adapted versions of one XPolicyLab and one Isaac Sim function (all attributed in NOTICE).
+
+**How it is checked.** Open-loop replay: the same recorded actions, run with every switch off and with the full preset,
+must give bit-identical PhysX state. Check modes: fast and original path run side by side on the same data and are
+compared byte for byte. Paired scores: the same layouts evaluated with and without the preset, compared against the
+spread of the same code run twice ([How the speedups are verified](#how-the-speedups-are-verified)).
+
+## What is patched
 
 * **Harness** (`--profile harness`): layout sharding across processes, one policy server per worker, span tracing, and
   for the Pi_05 policy loop an option to upload observations only at action-chunk starts (the only observation the

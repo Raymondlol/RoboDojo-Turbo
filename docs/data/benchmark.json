@@ -364,5 +364,20 @@
    "pour_liquid_into_cup_random": 8.0
   },
   "note": "all available pairs; pooling chosen after the runs; same-code repeat on stack_blocks: +12.0 [+2.4, +23.8]"
+ },
+ "per_step_ms": {
+  "source": "span traces of the 2026-09-27 stack_blocks benchmark runs (harness and speedup arms; 2 repetitions x 3 batches each; the unpatched arm has no tracer); mean over batches of the per-step span means",
+  "harness": {
+   "sim_step": 147.7,
+   "obs": 112.3,
+   "render": 81.9,
+   "reset_s": 18.6
+  },
+  "speedup": {
+   "sim_step": 50.6,
+   "obs": 80.4,
+   "render": 80.4,
+   "reset_s": 16.3
+  }
  }
 }
