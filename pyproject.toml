@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robodojo-turbo"
+version = "0.1.0a1"
+description = "Unofficial, verifiable evaluation speedups for the RoboDojo robot-learning benchmark"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md"]
+authors = [{ name = "Raymond Huang" }]
+requires-python = ">=3.10"
+keywords = ["robodojo", "isaac-sim", "robot-learning", "evaluation", "benchmark"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = ["numpy"]
+
+[project.urls]
+Repository = "https://github.com/Raymondlol/RoboDojo-Turbo"
+Issues = "https://github.com/Raymondlol/RoboDojo-Turbo/issues"
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+robodojo-turbo = "robodojo_turbo.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["robodojo_turbo*"]
+
+[tool.setuptools.package-data]
+robodojo_turbo = ["pins.json", "presets/*.env"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["upstream", ".git", "runs"]

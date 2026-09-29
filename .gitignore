@@ -1,0 +1,26 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+runs/
+# local checkouts, mirrors and environments (never commit upstream code or NVIDIA files)
+upstream/
+nv_mirror/
+*.mdl
+.venv/
+venv/
+.env
+# run outputs
+*.log
+*.pkl
+*.jsonl
+*.npz
+# tools and OS
+.mypy_cache/
+.ruff_cache/
+.coverage
+.idea/
+.vscode/
+.DS_Store

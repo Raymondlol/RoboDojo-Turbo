@@ -1,0 +1,51 @@
+name: ci
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"   # weekly: does upstream HEAD still match the patch anchors?
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ROBODOJO_COMMIT: 726e9aabfaa642203722eb126f5eaf0f37f3e1ad
+      XPOLICYLAB_COMMIT: bb9a0b5f5136a74503b679af830bfd0a3a837d5c
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"   # Isaac Sim 5.1's interpreter; patched files must compile under it
+      - run: pip install numpy pytest
+      - name: pinned upstream (code only; no LFS assets, no IsaacLab/cuRobo submodules)
+        run: |
+          export GIT_LFS_SKIP_SMUDGE=1
+          git clone --filter=blob:none https://github.com/RoboDojo-Benchmark/RoboDojo upstream
+          git -C upstream checkout "$ROBODOJO_COMMIT"
+          rm -rf upstream/XPolicyLab && git clone --filter=blob:none https://github.com/XPolicyLab/XPolicyLab upstream/XPolicyLab
+          git -C upstream/XPolicyLab checkout "$XPOLICYLAB_COMMIT"
+      - run: RDTURBO_TEST_UPSTREAM=$PWD/upstream python -m pytest -q tests
+  upstream-head:
+    # warning only: tells us when upstream HEAD moves away from the pinned files
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy
+      - name: upstream HEAD (code only)
+        run: |
+          export GIT_LFS_SKIP_SMUDGE=1
+          git clone --depth 1 https://github.com/RoboDojo-Benchmark/RoboDojo upstream
+          rm -rf upstream/XPolicyLab && git clone --depth 1 https://github.com/XPolicyLab/XPolicyLab upstream/XPolicyLab
+      - name: file hashes still pinned?
+        run: python -m robodojo_turbo pins --root upstream
+      - name: every patch anchor still applies (scratch copy; pins ignored)
+        if: always()
+        run: python -m robodojo_turbo apply --root upstream --profile all --dry-run --force-unpinned

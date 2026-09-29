@@ -1,0 +1,20 @@
+RoboDojo-Turbo
+Copyright 2026 Raymond Huang
+
+This product includes code adapted from the following projects:
+
+- XPolicyLab (https://github.com/XPolicyLab/XPolicyLab, commit bb9a0b5), Apache License 2.0:
+  policy/Pi_05/deploy.py, eval_one_episode_batch. robodojo_turbo/patches/harness.py (PI05_LOOP) is a modified version
+  (2026, Raymond Huang): observations uploaded only at chunk starts when RDTURBO_OBS_EVERY_STEP=0, video subsampling,
+  action record/replay, state/particle tracing, observation dumps, episode hooks for RDTURBO_USD_LAST.
+
+- NVIDIA Isaac Sim 5.1 (https://github.com/isaac-sim/IsaacSim), isaacsim.core.prims rigid_prim.py, RigidPrim.get_local_poses,
+  Copyright (c) 2021-2025 NVIDIA CORPORATION & AFFILIATES, Apache License 2.0. The parent-transform cache in
+  robodojo_turbo/patches/speedup.py (_rdturbo_pt_local_pose) follows the same algorithm (modified 2026: the parent's world
+  matrix is cached per view).
+
+- RoboDojo (https://github.com/RoboDojo-Benchmark/RoboDojo, commit 726e9aa), Copyright (c) 2025 Yue Chen, MIT License
+  (text in THIRD_PARTY_NOTICES.md). The video-only observation path in robodojo_turbo/patches/speedup.py (_rdturbo_vo_frames)
+  re-implements a few expressions of src/eval_client/eval_env.py (get_obs_batch) and
+  env/observation_manager/obs_manager.py (ObsManager.get_obs: capture_manager.step, the camera-name mapping and the
+  [:, :, :3] slice); the patches match single upstream lines as regex anchors.

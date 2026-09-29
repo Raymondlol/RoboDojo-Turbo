@@ -1,0 +1,368 @@
+{
+ "_about": "Measured with scripts/reproduce_benchmark.sh (pre-release build of 2026-09-27; injected code identical to the current code apart from identifier names). episode_done_s = seconds from the launcher's first log line until the episode's video was written (RoboDojo writes a batch's videos when the batch ends). wall_total_s = policy server start to last client exit.",
+ "conditions": {
+  "date": "2026-09-27",
+  "gpu": "RTX 5090",
+  "cpu": "Ryzen 9 9950X3D",
+  "driver": "580.178.04",
+  "isaac_sim": "5.1",
+  "isaac_lab": "2.3.2",
+  "robodojo": "726e9aa",
+  "xpolicylab": "bb9a0b5",
+  "policy": "pi0.5 RoboDojo-sim-arx_x5-joint-0 step 59999",
+  "processes_x_envs": "1 x 10",
+  "order": "upstream, harness, speedup, then reversed"
+ },
+ "stack_blocks": {
+  "task": "stack_blocks",
+  "layouts": 25,
+  "seed": 0,
+  "runs": {
+   "upstream": [
+    {
+     "tag": "bench_v010a1_upstream_r1",
+     "wall_total_s": 638,
+     "episode_done_s": {
+      "0": 254.9,
+      "1": 255.1,
+      "2": 255.2,
+      "3": 255.4,
+      "4": 255.5,
+      "5": 255.6,
+      "6": 255.8,
+      "7": 255.9,
+      "8": 256.1,
+      "9": 256.3,
+      "10": 466.2,
+      "11": 466.4,
+      "12": 466.6,
+      "13": 466.7,
+      "14": 466.8,
+      "15": 466.9,
+      "16": 467.1,
+      "17": 467.2,
+      "18": 467.3,
+      "19": 467.5,
+      "20": 634.3,
+      "21": 634.5,
+      "22": 634.6,
+      "23": 634.8,
+      "24": 634.9
+     }
+    },
+    {
+     "tag": "bench_v010a1_upstream_r2",
+     "wall_total_s": 634,
+     "episode_done_s": {
+      "0": 252.6,
+      "1": 252.8,
+      "2": 252.9,
+      "3": 253.1,
+      "4": 253.2,
+      "5": 253.3,
+      "6": 253.5,
+      "7": 253.6,
+      "8": 253.8,
+      "9": 253.9,
+      "10": 459.2,
+      "11": 459.3,
+      "12": 459.5,
+      "13": 459.6,
+      "14": 459.8,
+      "15": 459.9,
+      "16": 460.1,
+      "17": 460.2,
+      "18": 460.3,
+      "19": 460.5,
+      "20": 628.0,
+      "21": 628.2,
+      "22": 628.3,
+      "23": 628.4,
+      "24": 628.6
+     }
+    }
+   ],
+   "harness": [
+    {
+     "tag": "bench_v010a1_harness_r1",
+     "wall_total_s": 548,
+     "episode_done_s": {
+      "0": 215.0,
+      "1": 215.0,
+      "2": 215.0,
+      "3": 215.0,
+      "4": 215.0,
+      "5": 215.0,
+      "6": 215.0,
+      "7": 215.0,
+      "8": 215.0,
+      "9": 215.0,
+      "10": 392.0,
+      "11": 392.0,
+      "12": 392.0,
+      "13": 392.0,
+      "14": 392.0,
+      "15": 392.0,
+      "16": 392.0,
+      "17": 392.0,
+      "18": 392.0,
+      "19": 392.0,
+      "20": 542.9,
+      "21": 542.9,
+      "22": 542.9,
+      "23": 542.9,
+      "24": 542.9
+     }
+    },
+    {
+     "tag": "bench_v010a1_harness_r2",
+     "wall_total_s": 544,
+     "episode_done_s": {
+      "0": 217.3,
+      "1": 217.3,
+      "2": 217.3,
+      "3": 217.3,
+      "4": 217.3,
+      "5": 217.3,
+      "6": 217.3,
+      "7": 217.3,
+      "8": 217.3,
+      "9": 217.3,
+      "10": 389.6,
+      "11": 389.6,
+      "12": 389.6,
+      "13": 389.6,
+      "14": 389.6,
+      "15": 389.6,
+      "16": 389.6,
+      "17": 389.6,
+      "18": 389.6,
+      "19": 389.6,
+      "20": 539.9,
+      "21": 539.9,
+      "22": 539.9,
+      "23": 539.9,
+      "24": 539.9
+     }
+    }
+   ],
+   "speedup": [
+    {
+     "tag": "bench_v010a1_speedup_r1",
+     "wall_total_s": 301,
+     "episode_done_s": {
+      "0": 108.9,
+      "1": 108.9,
+      "2": 108.9,
+      "3": 108.9,
+      "4": 108.9,
+      "5": 108.9,
+      "6": 109.0,
+      "7": 109.0,
+      "8": 109.0,
+      "9": 109.0,
+      "10": 206.5,
+      "11": 206.5,
+      "12": 206.5,
+      "13": 206.5,
+      "14": 206.5,
+      "15": 206.5,
+      "16": 206.5,
+      "17": 206.5,
+      "18": 206.5,
+      "19": 206.5,
+      "20": 298.1,
+      "21": 298.1,
+      "22": 298.1,
+      "23": 298.1,
+      "24": 298.1
+     }
+    },
+    {
+     "tag": "bench_v010a1_speedup_r2",
+     "wall_total_s": 296,
+     "episode_done_s": {
+      "0": 108.0,
+      "1": 108.0,
+      "2": 108.0,
+      "3": 108.0,
+      "4": 108.0,
+      "5": 108.0,
+      "6": 108.0,
+      "7": 108.0,
+      "8": 108.0,
+      "9": 108.0,
+      "10": 203.5,
+      "11": 203.5,
+      "12": 203.5,
+      "13": 203.5,
+      "14": 203.5,
+      "15": 203.5,
+      "16": 203.5,
+      "17": 203.5,
+      "18": 203.5,
+      "19": 203.5,
+      "20": 293.4,
+      "21": 293.4,
+      "22": 293.4,
+      "23": 293.4,
+      "24": 293.4
+     }
+    }
+   ]
+  }
+ },
+ "workloads": [
+  {
+   "task": "make_kong",
+   "kind": "rigid, second robot (Franka)",
+   "official_s": 939,
+   "turbo_s": 396,
+   "legs": {
+    "upstream": {
+     "tag": "wl_make_kong_a1_upstream_r1",
+     "wall_total_s": 939,
+     "episodes": 25,
+     "successes": 4,
+     "score": 16.0,
+     "num_envs": "10",
+     "missing": [],
+     "host": {
+      "samples": 94,
+      "samples_with_foreign_cpu": 0,
+      "foreign": []
+     }
+    },
+    "speedup": {
+     "tag": "wl_make_kong_a1_speedup_r1",
+     "wall_total_s": 396,
+     "episodes": 25,
+     "successes": 7,
+     "score": 28.0,
+     "num_envs": "10",
+     "missing": [],
+     "host": {
+      "samples": 40,
+      "samples_with_foreign_cpu": 0,
+      "foreign": []
+     }
+    }
+   }
+  },
+  {
+   "task": "pick_from_conveyor_by_image",
+   "kind": "moving conveyor",
+   "official_s": 943,
+   "turbo_s": 450,
+   "legs": {
+    "upstream": {
+     "tag": "wl_pick_from_conveyor_by_image_a1_upstream_r1",
+     "wall_total_s": 943,
+     "episodes": 25,
+     "successes": 0,
+     "score": 0.0,
+     "num_envs": "10",
+     "missing": [],
+     "host": {
+      "samples": 94,
+      "samples_with_foreign_cpu": 9,
+      "foreign": [
+       "python"
+      ]
+     }
+    },
+    "speedup": {
+     "tag": "wl_pick_from_conveyor_by_image_a1_speedup_r1",
+     "wall_total_s": 450,
+     "episodes": 25,
+     "successes": 0,
+     "score": 0.0,
+     "num_envs": "10",
+     "missing": [],
+     "host": {
+      "samples": 46,
+      "samples_with_foreign_cpu": 0,
+      "foreign": []
+     }
+    }
+   },
+   "note": "During the official leg's third batch (about 3 min) another user's python processes used up to 5.6 cores (host load 3-4 of 32); that batch took 0.80 of the second batch's time, the same ratio as stack_blocks' official runs (168/211 s), so no slowdown is visible."
+  },
+  {
+   "task": "pour_liquid_into_cup_random",
+   "kind": "fluid (particles), cluttered",
+   "official_s": 1098,
+   "turbo_s": 805,
+   "legs": {
+    "upstream": {
+     "tag": "wl_pour_liquid_into_cup_random_a2_upstream_r1",
+     "wall_total_s": 1098,
+     "episodes": 25,
+     "successes": 2,
+     "score": 8.0,
+     "num_envs": "5",
+     "missing": [],
+     "host": {
+      "samples": 110,
+      "samples_with_foreign_cpu": 0,
+      "foreign": []
+     }
+    },
+    "speedup": {
+     "tag": "wl_pour_liquid_into_cup_random_a2_speedup_r1",
+     "wall_total_s": 805,
+     "episodes": 25,
+     "successes": 4,
+     "score": 16.0,
+     "num_envs": "5",
+     "missing": [],
+     "host": {
+      "samples": 80,
+      "samples_with_foreign_cpu": 0,
+      "foreign": []
+     }
+    }
+   },
+   "note": "5 environments per batch (RoboDojo's cap for *_random tasks) in both arms; particles are written back to USD on the last substep of every action (RDTURBO_USD_LAST_MODE=auto). The first attempt was stopped when another GPU process appeared and is not used."
+  },
+  {
+   "task": "stack_blocks",
+   "kind": "rigid blocks",
+   "official_s": 636,
+   "turbo_s": 299,
+   "source": "docs/data/benchmark.json stack_blocks (2 reps each)",
+   "note": "mean of 2 alternating runs per arm (638/634 s and 301/296 s)"
+  }
+ ],
+ "workloads_meta": {
+  "layouts": 25,
+  "seed": 0,
+  "date": "2026-09-28 (stack_blocks: 2026-09-27)",
+  "code": "pre-release build of 2026-09-28",
+  "runs": "1 run per arm (stack_blocks: mean of 2)",
+  "how": "scripts/reproduce_benchmark.sh --task <task> --layouts 25 --reps 1 --legs upstream,speedup; num_envs 5 for *_random"
+ },
+ "scores_pooled": {
+  "pairs": 5,
+  "tasks": 4,
+  "paired_layouts": 125,
+  "official_successes": 15,
+  "turbo_successes": 16,
+  "score_diff_pts": 0.7,
+  "ci95_pts": [
+   -4.2,
+   5.5
+  ],
+  "bootstrap": "20000 resamples, stratified by pair",
+  "mcnemar_p": 1.0,
+  "mde80_pts": 7.4,
+  "per_pair_diff_pts": {
+   "stack_blocks r1": -3.4,
+   "stack_blocks r2": -13.2,
+   "make_kong": 12.0,
+   "pick_from_conveyor_by_image": 0.0,
+   "pour_liquid_into_cup_random": 8.0
+  },
+  "note": "all available pairs; pooling chosen after the runs; same-code repeat on stack_blocks: +12.0 [+2.4, +23.8]"
+ }
+}

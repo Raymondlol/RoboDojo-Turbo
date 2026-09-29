@@ -1,0 +1,28 @@
+{
+ "files": {
+  "XPolicyLab/policy/Pi_05/deploy.py": "4ce7ac892b92ce5eae7d17b94108e7a66f69bcca121bf0cea7b53f5414133680",
+  "XPolicyLab/policy/Pi_05/setup_eval_policy_server.sh": "fca7acabf4413efe543fdfe3351aa0d2238ac360542972c55e800bd55fa5cef7",
+  "env/camera_manager/capture/camera_view.py": "364cd10dfd2be164efb4adf7a52adf2e7b38e49f4da90e70575d2ceaa7a6cada",
+  "env/camera_manager/capture/tiled_capture_manager.py": "9e70ba9165130d6adf4b63989a447db269b741597bcff7f9095a577f084ff126",
+  "env/reward_manager/func_parser.py": "eb928a05c3eb6bae429a922c59e64272c2c3851c22d779143d45627e47b3a504",
+  "env/robot_manager/control_manager.py": "81b7ecc3bed8248c16aa1517e686682d8e28ccfa9e550d45011b579a9219caab",
+  "env/robot_manager/robot_manager.py": "1306cb6d17b58a04ad8fc298edb6eb9122469048dbc9717dcf246f4f985d9974",
+  "env/scene_manager/objects/rigid.py": "ac50a7792b43be99e2f4362b946e9319a6aeb9c26be2766ebca6b780296cfa9b",
+  "env/seed_manager/seed_manager.py": "292eee4003de1c22b288ec3bc1d04d95c7aee5368f30991679ea1cc4c37247b3",
+  "scripts/eval_policy.sh": "b27ca311a2f0eb9b0ac182d7ed0d7e8e13f08cc5d1467eff6f7df3ffdb905f3e",
+  "src/eval_client/eval_env.py": "3ae75304d8a840ede2589441f987824f50b2a89cc2ef37f4d43ce0a8dbc4fd88",
+  "src/eval_client/main.py": "ca6ba652b6f123506370f1907b1d88060d83f56c9e91ce6e6930f63d9f2b71a8",
+  "utils/save_file.py": "6cff5950f73bf7a1ed404f804d6f08af712974f22c3955de4cdf142f211aaf00"
+ },
+ "note": "sha256 of every upstream file a patch may rewrite; XPolicyLab d6332bf leaves the pinned Pi_05 files unchanged",
+ "upstream": {
+  "RoboDojo": "726e9aabfaa642203722eb126f5eaf0f37f3e1ad",
+  "XPolicyLab": [
+   "bb9a0b5f5136a74503b679af830bfd0a3a837d5c",
+   "d6332bf10b15dda007efdd17e5f64fc5e1d3d19f"
+  ],
+  "isaaclab": "2.3.2 (isaaclab extension 0.54.3; validated with, not checked)",
+  "isaacsim": "5.1.0 (validated with, not checked)",
+  "omni.physx": "107.3.26"
+ }
+}
