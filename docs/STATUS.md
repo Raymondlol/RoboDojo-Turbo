@@ -37,10 +37,13 @@ Items dated 2026-09-27 and 2026-09-28 ran on pre-release builds of this code (do
 - [x] Re-check with the current identifiers (2026-09-28): patched trees identical to the 2026-09-27 build apart from identifier names (16/16 files); `stack_blocks` layouts 0-9 speedup closed loop 115 s, rc=0, every switch counter as on 2026-09-27 (a first run took 215 s while a parallel compile loaded the host CPU: time only on an idle host)
 - [x] `VIDEO_ONLY_OBS=1` vs `0` chunk-start frames (`RDTURBO_OBS_DUMP`, 2026-09-27): within the render-noise floor on all three cameras
 - [x] Pooled paired score comparison over four tasks (2026-09-28, 125 paired layouts): +0.7 points, 95% CI [-4.2, +5.5]
-- [ ] More runs per arm per task (per-task samples of 25 move by up to 12 points on their own)
-- [x] Speedup on 4 tasks x 25 official layouts (2026-09-28, one run per arm): rigid 2.13x, second robot 2.37x, conveyor 2.10x, fluid `_random` 1.36x (README)
+- [x] Two more runs per arm on each of the four tasks with this code (2026-09-29, 0.1.0a1): all 13 pairs, 325 paired
+  layouts, +0.2 points, 95% CI [-3.0, +3.4], official 39/325 and Turbo 40/325 successes, MDE80 4.6 points (6.0 without
+  the conveyor task, which had no successes; per task 8-14)
+- [ ] optional: more runs per arm where a task scores near zero (conveyor: 0 successes in 75 layouts per arm)
+- [x] Speedup on 4 tasks x 25 official layouts (2026-09-28, one run per arm): rigid 2.13x, second robot 2.37x, conveyor 2.10x, fluid `_random` 1.36x
+- [x] Re-timed with two runs per arm and the same JAX compilation cache in both arms (2026-09-29, 0.1.0a1): 2.15x, 2.30x, 2.05x, 1.34x (README)
 - [ ] Timing on an articulated-object task and a cloth task
-- [ ] Re-time with the JAX compilation cache in the same state in both arms (`reproduce_benchmark.sh --same-jax-cache`; warm in the speedup arm only so far, about 6 s per run)
 - [ ] optional: ABAB repeats; JAX cold vs warm compile cache bitwise
 
 ## Upstream watch (checked 2026-09-28)
@@ -56,7 +59,7 @@ Items dated 2026-09-27 and 2026-09-28 ran on pre-release builds of this code (do
 - [x] Numbers in README/docs come from runs of this code, except the predecessor results, which are labelled as such (docs/validation.md lists what this code re-covered)
 - [x] The 100 extra layouts are not shipped; the predecessor's 125-layout numbers stay, labelled as not reproducible from this repository
 - [x] Pi_05-only for chunk-start upload, `VIDEO_ONLY_OBS` and `USD_LAST` (documented limitation); other switches are policy-independent
-- [x] Every injected block read in a patched tree (2026-09-29; 3 reviewers + 3 adversarial verifiers): no high findings; 1 medium and 12 low confirmed and fixed (d69dba5). These fixes change edge cases only (invalid values, verification tooling, logging, non-root pipe size); the next GPU run re-checks them
+- [x] Every injected block read in a patched tree (2026-09-29; 3 reviewers + 3 adversarial verifiers): no high findings; 1 medium and 12 low confirmed and fixed before the first public commit. These fixes change edge cases only (invalid values, verification tooling, logging, non-root pipe size). The 2026-09-29 closed-loop benchmark (speedup preset, 4 tasks, 16 legs, all rc=0) ran the fixed Pi_05 loop with valid switch values; the verification-tooling fixes (replay, check modes) have not been re-run on a GPU yet
 - [ ] Name, license and trademark check (similar names exist in the RoboDojo ecosystem; check GitHub and PyPI); README states "unofficial" prominently
 - [ ] RoboDojo licence question: MIT LICENSE file vs non-commercial wording in its README (disclosed in README and THIRD_PARTY_NOTICES; keep this item blocking)
 - [x] Private preview on GitHub: history squashed into one commit, noreply author only, no tag yet (2026-09-28), clone URL, dated CHANGELOG, `[project.urls]`

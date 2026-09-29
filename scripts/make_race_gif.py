@@ -81,7 +81,7 @@ def main():
                     dr.text((x, 58 + PH + 38), f"{clock}  wall clock", font=f_text, fill=TXT, anchor="lm")
             dr.text((W // 2, H - 34), f"stack_blocks layout {a.layout}, head camera, one RTX 5090 · each frame appears when it was rendered"
                                       " · PhysX state bit-identical", font=f_small, fill=MUTED, anchor="mm")
-            dr.text((W // 2, H - 16), "a replay runs no policy inference; full closed-loop evaluations are 1.4-2.4x faster (charts below)",
+            dr.text((W // 2, H - 16), "a replay runs no policy inference; full closed-loop evaluations are 1.3-2.3x faster (charts below)",
                     font=f_small, fill=MUTED, anchor="mm")
             im.save(os.path.join(out_dir, f"{g:04d}.png"))
         pal = os.path.join(tmp, "palette.png")

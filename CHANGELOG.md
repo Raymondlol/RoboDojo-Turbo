@@ -52,12 +52,22 @@ Isaac Sim 5.1 / Isaac Lab 2.3.2 / omni.physx 107.3.26, one RTX 5090 + Ryzen 9 99
 - The current identifiers were re-checked on 2026-09-28: patched trees identical to the 2026-09-27 build apart from
   identifier names; `stack_blocks` layouts 0-9 speedup closed loop 115 s, rc=0.
 
+### Validated on a GPU with this code (0.1.0a1, commit eba171e, 2026-09-29)
+- Four tasks, official 25 layouts, two runs per arm (official, Turbo, Turbo, official), same JAX compilation cache in
+  both arms: `stack_blocks` 639.5 -> 297.5 s (2.15x), `make_kong` 913 -> 397.5 s (2.30x), `pick_from_conveyor_by_image`
+  911 -> 443.5 s (2.05x), `pour_liquid_into_cup_random` 1008.5 -> 753 s (1.34x, 5 envs per batch); two runs of the same
+  arm within 1.9%.
+- Closed-loop scores over all 13 official-vs-Turbo run pairs (8 with this code, 5 with the 2026-09-27/28 pre-release
+  builds and a Turbo-only warm JAX cache; 325 paired layouts): official 39, Turbo 40 successes, +0.2 points, 95% CI
+  [-3.0, +3.4], exact McNemar p = 1.0, MDE80 4.6 points (6.0 without the conveyor task, which had no successes); the 8
+  new pairs alone: 24 vs 24, -0.1 [-4.2, +4.0].
+
 ### Known limitations and issues
 - Timing: four tasks, one machine, the Pi_05 policy; cloth and articulated-object tasks, other hosts and GPUs are
-  unmeasured. The speedup arm had a warm JAX compilation cache (part of the preset, about 6 s per run); the other arms
-  compiled on every run.
-- Scores: pooled over the four timed tasks (125 paired layouts, one or two runs per arm) the difference is +0.7 points,
-  95% CI [-4.2, +5.5]; per-task samples are small. Physics is bit-identical under open-loop replay on `stack_blocks` and
+  unmeasured. In the 2026-09-27/28 runs only the speedup arm had a warm JAX compilation cache (about 6 s per run); the
+  2026-09-29 runs give both arms the same cache.
+- Scores: pooled over the four timed tasks (325 paired layouts, three or four runs per arm) the difference is +0.2
+  points, 95% CI [-3.0, +3.4]; per task, changes below about 8-14 points would go undetected. Physics is bit-identical under open-loop replay on `stack_blocks` and
   the chunk-start images the policy receives are within render noise with `VIDEO_ONLY_OBS` on and off.
 - `RDTURBO_USD_LAST` leaves bodies that fall asleep during an action stale in USD: up to 1.2 mm and ~6 deg (eggs,
   `fill_egg_holder`), 0.3-0.9 mm on the other affected tasks, 5 of 11 tasks, none on `stack_blocks`. The rendered pose

@@ -1,20 +1,21 @@
 # RoboDojo-Turbo (work in progress)
 
-[![eval wall-clock: 1.4-2.4x faster on 4 tasks](https://img.shields.io/badge/eval_wall--clock-1.4%E2%80%932.4%C3%97_faster_(4_tasks)-0969da)](#measured-so-far)
+[![eval wall-clock: 1.3-2.3x faster on 4 tasks](https://img.shields.io/badge/eval_wall--clock-1.3%E2%80%932.3%C3%97_faster_(4_tasks)-0969da)](#measured-so-far)
 [![replay physics: bit-identical on stack_blocks](https://img.shields.io/badge/replay_physics-bit--identical_(stack__blocks)-2da44e)](docs/validation.md)
 [![eval protocol: unchanged](https://img.shields.io/badge/eval_protocol-unchanged-2da44e)](#how-it-works)
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![status: alpha](https://img.shields.io/badge/status-alpha-orange)](docs/STATUS.md)
 
-<img src="docs/img/race.gif" width="100%" alt="The same recorded actions replayed side by side on one RTX 5090, stack_blocks layout 8: every switch off finishes the episode in 1:44 wall clock, RoboDojo-Turbo in 0:35; identical motion (PhysX state bit-identical), shown at 15x speed; a replay runs no policy inference, full closed-loop evaluations are 1.4-2.4x faster">
+<img src="docs/img/race.gif" width="100%" alt="The same recorded actions replayed side by side on one RTX 5090, stack_blocks layout 8: every switch off finishes the episode in 1:44 wall clock, RoboDojo-Turbo in 0:35; identical motion (PhysX state bit-identical), shown at 15x speed; a replay runs no policy inference, full closed-loop evaluations are 1.3-2.3x faster">
 
-**Evaluate policies on [RoboDojo](https://github.com/RoboDojo-Benchmark/RoboDojo) 1.4–2.4× faster on the same
+**Evaluate policies on [RoboDojo](https://github.com/RoboDojo-Benchmark/RoboDojo) 1.3–2.3× faster on the same
 machine, with the same physics and scoring code.** RoboDojo-Turbo patches your local RoboDojo checkout: tasks, official
 layouts, checkpoints, scoring code, physics, `dt` and render cadence stay as upstream; host-side overhead is removed, and
 the recommended preset records one camera video instead of three. Measured with the Pi_05 policy on one RTX 5090 +
 Ryzen 9 9950X3D over four tasks: PhysX state under open-loop replay is bit-identical with every switch off and with the
-speedup preset (`stack_blocks`, 10 layouts), and pooled over the four tasks (125 paired layouts) the closed-loop score
-changed by +0.7 points, 95% CI [-4.2, +5.5], with 16 vs 15 successes ([details](#measured-so-far),
+speedup preset (`stack_blocks`, 10 layouts), and pooled over the four tasks (325 paired layouts from 13 run pairs, 5 of
+them on pre-release builds) the closed-loop score changed by +0.2 points, 95% CI [-3.0, +3.4], with 40 successes for
+Turbo and 39 for official ([details](#measured-so-far),
 [limits](#known-limitations)). Use it for the inner loop of policy research (screening checkpoints, ablations, quick
 checks before a full evaluation) and confirm final numbers on unpatched RoboDojo.
 
@@ -24,14 +25,14 @@ system.</sub>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-dark.svg">
-  <img src="docs/img/hero.svg" width="100%" alt="stack_blocks, 25 official layouts on one RTX 5090: official RoboDojo 10.6 min, RoboDojo-Turbo 5.0 min (2.13x); layouts finished over time for both">
+  <img src="docs/img/hero.svg" width="100%" alt="stack_blocks, 25 official layouts on one RTX 5090, mean of 2 alternating runs per arm with the same JAX compile cache: official RoboDojo 10.7 min, RoboDojo-Turbo 5.0 min (2.15x); layouts finished over time for both">
 </picture>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/workloads-dark.svg">
-  <img src="docs/img/workloads.svg" width="100%" alt="25 official layouts per task on one RTX 5090, official vs RoboDojo-Turbo: pour_liquid_into_cup_random 18.3 vs 13.4 min (1.36x), pick_from_conveyor_by_image 15.7 vs 7.5 min (2.10x), make_kong 15.7 vs 6.6 min (2.37x), stack_blocks 10.6 vs 5.0 min (2.13x)">
+  <img src="docs/img/workloads.svg" width="100%" alt="25 official layouts per task on one RTX 5090, mean of 2 alternating runs per arm, official vs RoboDojo-Turbo: pour_liquid_into_cup_random 16.8 vs 12.6 min (1.34x), make_kong 15.2 vs 6.6 min (2.30x), pick_from_conveyor_by_image 15.2 vs 7.4 min (2.05x), stack_blocks 10.7 vs 5.0 min (2.15x)">
 </picture>
 
-> Status: pre-release preview (CHANGELOG.md). Timed with this code on one machine and four tasks, scores compared on one task; see Known limitations and [docs/STATUS.md](docs/STATUS.md).
+> Status: pre-release preview (CHANGELOG.md). Timed and scored with this code on one machine and four tasks; see Known limitations and [docs/STATUS.md](docs/STATUS.md).
 
 ## How it works
 
@@ -59,14 +60,14 @@ policy is shown at the steps it acts on, or what is scored (one known exception 
 
 | upstream spends time on | RoboDojo-Turbo | measured effect (`stack_blocks`, 10 envs) |
 |---|---|---|
-| uploading the raw images of 10 envs x 3 cameras on every step (~27.6 MB), although Pi_05 reads only the observation at each chunk start | upload at chunk starts only; frames in between are still rendered, for the video | whole evaluation 636 -> 546 s with the harness preset (this, the lossless fast path below and one camera video) |
+| uploading the raw images of 10 envs x 3 cameras on every step (~27.6 MB), although Pi_05 reads only the observation at each chunk start | upload at chunk starts only; frames in between are still rendered, for the video | whole evaluation 636 -> 546 s with the harness preset (2026-09-27; this, the lossless fast path below and one camera video) |
 | writing every pose back to USD after every physics substep, and five UI-only listeners reacting to each write | write back once per action, before anything reads the scene (the last substep is kept for fluids and cloth); revoke the UI listeners | physics step 148 -> 51 ms |
 | assembling a full observation on steps that only feed the video, and RGBA readout | read out only the recorded cameras on those steps, 3-channel readout | observation step 112 -> 80 ms |
 | deep copies and duplicate recomputation of controls, observations and joint targets | lossless removal, each checked byte for byte against the original path | part of the two rows above |
 | building the unused motion planner, fetching NVIDIA assets online, garbage-collection pauses, video encoding | skip the planner for joint actions, local asset mirror, `gc.freeze`, lighter video settings | start-up, memory (about 1.8 GB VRAM per process) |
 | rendering | unchanged | 82 -> 80 ms per step |
 
-Step times are per action step from the span traces of the benchmark runs, harness vs full preset (the unpatched arm is
+Step times are per action step from the span traces of the 2026-09-27 three-arm benchmark (pre-release build), harness vs full preset (the unpatched arm is
 not traced); the numbers behind every row are in [docs/switches.md](docs/switches.md) and `docs/data/benchmark.json`.
 
 **What stays the same.** Tasks, official layouts, checkpoints and scoring code; physics settings, `dt` and substeps; every
@@ -179,42 +180,59 @@ exit). No other process on the GPU.
   gives bit-identical PhysX state (5,208/5,208 states; docs/validation.md).
 * The speedup preset keeps a JAX compilation cache (`JAX_COMPILATION_CACHE_DIR`); the upstream and harness arms compile
   on every run, as RoboDojo does by default. First inference takes 8.4 s cold and 2.0 s warm, so about 6 s of each
-  speedup-arm run (2%) comes from the cache.
+  speedup-arm run (2%) comes from the cache. The re-timing below gives both arms the same cache: 2.15x on this task.
 * **Scores (closed loop) at n = 25 are noisy**: the upstream arm scored 20.4 and 32.4 in its two repetitions (a +12.0
   point difference, 95% CI [+2.4, +23.8], for the same code), and speedup vs upstream was -3.4 [-12.0, +2.4] and -13.2
   [-26.4, -2.4] points; no success-level difference is significant (exact McNemar p >= 0.25), and at this n the test
   cannot detect changes smaller than about 18 points (MDE80). The speedup arm scored lowest in both repetitions (chance
   about 1 in 9 if all arms were equal). Two fast paths can change what the policy sees: `VIDEO_ONLY_OBS`, whose chunk-
   start images stay within render noise on all three cameras (docs/validation.md), and `USD_LAST` where bodies fall
-  asleep during an action (Known limitations). Pooled over four tasks see "Across workloads" below. With the predecessor
+  asleep during an action (Known limitations). Pooled over four tasks and 13 run pairs see "Across workloads" below. With the predecessor
   on 125 layouts (same unshipped set) and common random numbers, harness vs all switches scored 18/125 vs 18/125 (score
   difference -1.0 [-6.7, +4.6]).
 
-### Across workloads (2026-09-28)
+### Across workloads (2026-09-29)
 
-Same machine, conditions and checkpoint as above; pre-release build of 2026-09-28; `scripts/reproduce_benchmark.sh --task <task>
---layouts 25 --reps 1 --legs upstream,speedup` (one run per arm; stack_blocks from the table above). `*_random` tasks run 5
-environments per batch in both arms (RoboDojo's `clutter_env_limit`). Raw numbers and notes: docs/data/benchmark.json.
+Same machine, conditions and checkpoint as above; code 0.1.0a1 (commit eba171e); `scripts/reproduce_benchmark.sh --task
+<task> --layouts 25 --reps 2 --legs upstream,speedup --same-jax-cache`: two runs per arm in the order official, Turbo,
+Turbo, official, both arms with the same JAX compilation cache, the four tasks one after another in one session. No other
+compute process on the GPU (checked every 30 s); host 1-minute load average, sampled every 10 s: median 1.8, 90th
+percentile 3.7 of 32 threads (evaluation included); a per-process sampler flagged one 10-s sample (one core, an analysis
+script of ours) during the first official conveyor run. `*_random` tasks run 5 environments per batch in both arms (RoboDojo's `clutter_env_limit`).
+Raw numbers and notes: docs/data/benchmark.json (`workloads`).
 
-| task | kind | envs per batch | official RoboDojo | RoboDojo-Turbo | speedup | successes (official / Turbo) |
+| task | kind | envs per batch | official RoboDojo (run 1 / run 2) | RoboDojo-Turbo (run 1 / run 2) | speedup | successes of 25, official / Turbo |
 |---|---|---:|---:|---:|---:|---|
-| `stack_blocks` | rigid blocks | 10 | 636 s | 299 s | 2.13x | 3, 6 / 2, 3 of 25 (two runs) |
-| `make_kong` | rigid, second robot (Franka) | 10 | 939 s | 396 s | 2.37x | 4 / 7 of 25 |
-| `pick_from_conveyor_by_image` | moving conveyor | 10 | 943 s | 450 s | 2.10x | 0 / 0 of 25 |
-| `pour_liquid_into_cup_random` | fluid (particles), cluttered | 5 | 1098 s | 805 s | 1.36x | 2 / 4 of 25 |
+| `stack_blocks` | rigid blocks | 10 | 641 / 638 s | 295 / 300 s | 2.15x | 3, 3 / 6, 4 |
+| `make_kong` | rigid, second robot (Franka) | 10 | 918 / 908 s | 400 / 395 s | 2.30x | 6, 7 / 6, 6 |
+| `pick_from_conveyor_by_image` | moving conveyor | 10 | 908 / 914 s | 441 / 446 s | 2.05x | 0, 0 / 0, 0 |
+| `pour_liquid_into_cup_random` | fluid (particles), cluttered | 5 | 1018 / 999 s | 750 / 756 s | 1.34x | 2, 3 / 1, 1 |
 
+* Speedup = ratio of the two-run means. Two runs of the same arm in this session differed by at most 1.9%; across
+  sessions the same arm moved by up to 8% (fluid task, both arms faster now). Earlier runs with pre-release builds and
+  the JAX cache warm in the Turbo arm only (2026-09-27/28, docs/benchmark.md) gave 2.13x, 2.37x, 2.10x and 1.36x.
 * The fluid task gains least. Two differences are known: its particles are still written back to USD on every action
   (`RDTURBO_USD_LAST_MODE=auto` keeps that write), and it runs half-size batches; how much each contributes was not
   measured. Cloth tasks use the same write-back path and were not timed.
-* One run per arm, official leg first in each task; on stack_blocks two runs of the same arm differed by 0.6% and 1.7%
-  (638/634 s, 301/296 s). The speedup legs used the warm JAX cache (above). During the conveyor task's official leg
-  another user's processes used up to 5.6 CPU cores for about 3 minutes; that batch's time relative to the previous one
-  matched stack_blocks' official runs (docs/benchmark.md).
-* **Scores pooled over the four tasks** (all five run pairs above, 125 paired layouts,
-  `python -m robodojo_turbo.tools.paired_compare A1 B1 A2 B2 ...`): official 15/125 successes, Turbo 16/125; score
-  difference +0.7 points, 95% bootstrap CI [-4.2, +5.5] (resampled within each task), exact McNemar p = 1.0, MDE80 7.4
-  points. For scale, the same code run twice on stack_blocks differed by +12.0 [+2.4, +23.8]. The conveyor task had no
-  successes in either arm, so it adds ties only; per-task samples are small (one run per arm).
+* **Scores pooled over the four tasks**: every official-vs-Turbo run pair so far (2026-09-27: 2 on `stack_blocks` and
+  2026-09-28: 1 on each other task, pre-release builds with the JAX cache warm in the Turbo arm only; 2026-09-29: the 8
+  above), 325 paired layouts,
+  `python -m robodojo_turbo.tools.paired_compare A1 B1 A2 B2 ...`: official 39/325 successes, Turbo 40/325; score
+  difference +0.2 points, 95% bootstrap CI [-3.0, +3.4] (resampled within each pair), exact McNemar p = 1.0 (15 of the
+  325 paired layouts succeeded only in the official run, 16 only with Turbo), MDE80 4.6 points. The conveyor task (no
+  successes in 150 runs) adds 75 ties only; without it: 250 paired layouts, +0.3 [-3.8, +4.3], MDE80 6.0 points. The
+  2026-09-29 pairs alone (0.1.0a1, same JAX cache): 24 vs 24 successes, -0.1 [-4.2, +4.0]. The pooling follows the
+  all-available-pairs rule of the 2026-09-28 comparison; the 2026-09-29 runs were planned as additional pairs. For
+  scale, the same code run twice on `stack_blocks` differed by +12.0 [+2.4, +23.8].
+
+  | task (all pairs) | pairs | successes, official / Turbo | score difference, 95% CI | MDE80 |
+  |---|---:|---|---|---:|
+  | `stack_blocks` | 4 | 15 / 15 of 100 | -0.3 [-6.4, +5.6] | 8.9 |
+  | `make_kong` | 3 | 17 / 19 of 75 | +2.7 [-6.7, +12.0] | 14.0 |
+  | `pick_from_conveyor_by_image` | 3 | 0 / 0 of 75 | no successes in either arm | – |
+  | `pour_liquid_into_cup_random` | 3 | 7 / 6 of 75 | -1.3 [-6.7, +4.0] | 8.4 |
+
+  No per-task difference is significant; per task, changes smaller than about 8-14 points would go undetected.
 * The savings are main-thread CPU work (GPU work is unchanged), so other hosts will differ; unmeasured. Articulated-object
   tasks are not timed yet.
 

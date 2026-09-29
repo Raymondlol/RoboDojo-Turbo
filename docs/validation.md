@@ -9,8 +9,8 @@ checkpoint, 1 process x 10 envs. This code re-covers them as follows: replay phy
 125-layout score comparison, which also used layouts that are not shipped. Everything dated 2026-09-27 was produced with
 pre-release builds of this code: early builds for the multi-task check run and the laptop replay A/B, a later build for
 the replay, frame and benchmark runs. The later build differs from the early ones in switch-value parsing (empty =
-default), the replay-strict option and the split of USD-side values in the state trace; the current code differs from
-the later build only in identifier names. Switch and file names
+default), the replay-strict option and the split of USD-side values in the state trace; the current code (0.1.0a1)
+differs from the later build in identifier names and in the edge-case fixes of 2026-09-29 (docs/STATUS.md). Switch and file names
 below use the current spelling (`RDTURBO_*`).
 
 ## 1. Bit-exact physics under open-loop action replay
@@ -74,6 +74,21 @@ position difference 3.6e-15 m; robot links and rigid objects). Articulated objec
   16/125 successes; score difference +0.7 points, 95% bootstrap CI [-4.2, +5.5] stratified by pair; exact McNemar
   p = 1.0; MDE80 7.4 points. Per pair: -3.4, -13.2, +12.0, 0.0 (no successes in either arm), +8.0 points. All available
   pairs are included; the pooling was chosen after the runs, not declared beforehand.
+
+* **2026-09-29, two more runs per arm on each of the four tasks** (0.1.0a1, commit eba171e; `reproduce_benchmark.sh
+  --reps 2 --legs upstream,speedup --same-jax-cache`, order official, Turbo, Turbo, official; docs/benchmark.md): 8 new
+  pairs, 200 paired layouts, official 24/200 and Turbo 24/200 successes, score difference -0.1 points [-4.2, +4.0],
+  McNemar p = 1.0, MDE80 6.0 points. Pooled with the five earlier pairs (pre-release builds, JAX cache warm in the
+  Turbo arm only; the all-available-pairs rule of the 2026-09-28 comparison): 13 pairs, 325 paired layouts, official
+  39/325, Turbo 40/325, **+0.2 points [-3.0, +3.4]**, exact McNemar p = 1.0 (15 of the 325 paired layouts succeeded
+  only in the official run, 16 only with Turbo), MDE80 4.6 points. The conveyor task (no successes in 150 runs) adds 75
+  ties only; without it: 250 paired layouts, +0.3 [-3.8, +4.3], MDE80 6.0 points. Per task over all pairs:
+  `stack_blocks` 15 vs 15 of 100, -0.3 [-6.4, +5.6]; `make_kong` 17 vs 19 of 75, +2.7 [-6.7, +12.0];
+  `pour_liquid_into_cup_random` 7 vs 6 of 75, -1.3 [-6.7, +4.0] (successes on 5 of 25 layouts, each of them in both
+  arms at least once except layout 15, official only, 1 of 3, and layout 7, Turbo only, 1 of 3); `pick_from_conveyor_by_image`
+  no successes in 75 layouts per arm. Read against the same-code repeat above (+12.0 points at n = 25): a change of about
+  5 points averaged over all 325 layouts (6 points over the 250 layouts of the three tasks with successes), or 8-14
+  points per task, would have been detected with 80% power; smaller changes may not be.
 
 `python -m robodojo_turbo.tools.paired_compare` compares two runs layout by layout (wins/losses, mean score difference
 with a paired bootstrap CI, exact McNemar, MDE80), or pools several pairs (`A1 B1 A2 B2 ...`) with a bootstrap stratified

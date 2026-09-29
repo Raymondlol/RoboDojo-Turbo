@@ -62,8 +62,9 @@ def batch_steps(runs, gap=5.0):
 
 
 def hero(d, t):
-    sb = d["stack_blocks"]
+    sb = d.get("hero") or d["stack_blocks"]
     up, tu = sb["runs"]["upstream"], sb["runs"]["speedup"]
+    same_cache = sb.get("jax_cache") == "same in both arms"
     w_up, w_tu = mean(r["wall_total_s"] for r in up), mean(r["wall_total_s"] for r in tu)
     W, H = 900, 358
     c = d["conditions"]
@@ -106,8 +107,9 @@ def hero(d, t):
             b.append(text(X(s_k) + 10, Y(n_k) + 18, label, 12, cls, "start"))
     b.append(text(24, H - 26, "Same physics settings, dt and render cadence; PhysX state bit-identical under open-loop replay (layouts 0-9). "
                               "Turbo records one camera", 11, "m"))
-    b.append(text(24, H - 12, "video instead of three and keeps a JAX compile cache (about 6 s of its time). "
-                              "Conditions and raw data: docs/benchmark.md, docs/data/benchmark.json.", 11, "m"))
+    b.append(text(24, H - 12, ("video instead of three; both arms use the same JAX compile cache. " if same_cache else
+                               "video instead of three and keeps a JAX compile cache (about 6 s of its time). ") +
+                  "Conditions and raw data: docs/benchmark.md, docs/data/benchmark.json.", 11, "m"))
     return svg(W, H, t, b, "RoboDojo-Turbo vs official RoboDojo evaluation wall-clock")
 
 
@@ -122,8 +124,10 @@ def workloads(d, t):
     b = [text(24, 34, "Across workloads", 19, "b"),
          text(24, 56, f"{d['workloads_meta']['layouts']} official layouts per task · Pi_05 · 1 × 10 envs (5 for *_random, "
                       f"RoboDojo's cap) · {c['gpu']} + {c['cpu']}", 12, "m"),
-         text(24, 74, "1 run per arm, official leg first (stack_blocks: mean of 2 alternating runs) · "
-                      "Turbo with a warm JAX compile cache", 12, "m")]
+         text(24, 74, (f"mean of {len(rows[0]['runs']['upstream'])} alternating runs per arm (official, Turbo, Turbo, official) · "
+                       "same JAX compile cache in both arms") if "runs" in rows[0] else
+                      ("1 run per arm, official leg first (stack_blocks: mean of 2 alternating runs) · "
+                       "Turbo with a warm JAX compile cache"), 12, "m")]
     lx, bx, bw = 24, 330, 440
     vmax = max(r["official_s"] for r in rows)
     y = 100

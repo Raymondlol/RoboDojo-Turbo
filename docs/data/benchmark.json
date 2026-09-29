@@ -1,5 +1,5 @@
 {
- "_about": "Measured with scripts/reproduce_benchmark.sh (pre-release build of 2026-09-27; injected code identical to the current code apart from identifier names). episode_done_s = seconds from the launcher's first log line until the episode's video was written (RoboDojo writes a batch's videos when the batch ends). wall_total_s = policy server start to last client exit.",
+ "_about": "stack_blocks (and conditions, per_step_ms): the 2026-09-27 three-arm benchmark, scripts/reproduce_benchmark.sh with a pre-release build (injected code as in 0.1.0a1 apart from identifier names and the 2026-09-29 edge-case fixes listed in docs/STATUS.md). workloads and hero: 2026-09-29, 0.1.0a1 (commit eba171e), two runs per arm, same JAX compilation cache directory in both arms (workloads_meta). workloads_2026_09_28: the first runs, one per arm, pre-release build of 2026-09-28. scores_pooled: all 13 official-vs-Turbo run pairs (5 on the pre-release builds); scores_pooled_2026_09_29: the 8 pairs of 2026-09-29 only; scores_pooled_without_conveyor: all pairs except the conveyor task (no successes in either arm); scores_per_task: all pairs of one task; scores_pooled_2026_09_28: the 5-pair result as published on 2026-09-28. All scores from tools.paired_compare (bootstrap seed 0, pairs in the listed order). episode_done_s = seconds from the launcher's first log line until the episode's video was written (RoboDojo writes a batch's videos when the batch ends). wall_total_s = policy server start to last client exit.",
  "conditions": {
   "date": "2026-09-27",
   "gpu": "RTX 5090",
@@ -214,135 +214,1252 @@
  },
  "workloads": [
   {
+   "task": "stack_blocks",
+   "kind": "rigid blocks",
+   "num_envs": 10,
+   "official_s": 639.5,
+   "turbo_s": 297.5,
+   "runs": {
+    "upstream": [
+     {
+      "tag": "sc_stack_blocks_a1_upstream_r1",
+      "wall_total_s": 641,
+      "episodes": 25,
+      "successes": 3,
+      "score": 19.2,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 255.3,
+       "1": 255.4,
+       "2": 255.5,
+       "3": 255.7,
+       "4": 255.8,
+       "5": 256.0,
+       "6": 256.1,
+       "7": 256.3,
+       "8": 256.4,
+       "9": 256.5,
+       "10": 471.9,
+       "11": 472.0,
+       "12": 472.2,
+       "13": 472.3,
+       "14": 472.4,
+       "15": 472.6,
+       "16": 472.7,
+       "17": 472.9,
+       "18": 473.0,
+       "19": 473.1,
+       "20": 636.0,
+       "21": 636.2,
+       "22": 636.3,
+       "23": 636.5,
+       "24": 636.6
+      },
+      "host": {
+       "samples": 64,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     },
+     {
+      "tag": "sc_stack_blocks_a1_upstream_r2",
+      "wall_total_s": 638,
+      "episodes": 25,
+      "successes": 3,
+      "score": 21.0,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 250.0,
+       "1": 250.1,
+       "2": 250.3,
+       "3": 250.4,
+       "4": 250.6,
+       "5": 250.7,
+       "6": 250.9,
+       "7": 251.0,
+       "8": 251.2,
+       "9": 251.3,
+       "10": 463.1,
+       "11": 463.3,
+       "12": 463.4,
+       "13": 463.6,
+       "14": 463.7,
+       "15": 463.9,
+       "16": 464.0,
+       "17": 464.2,
+       "18": 464.4,
+       "19": 464.5,
+       "20": 632.9,
+       "21": 633.0,
+       "22": 633.1,
+       "23": 633.3,
+       "24": 633.4
+      },
+      "host": {
+       "samples": 64,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     }
+    ],
+    "speedup": [
+     {
+      "tag": "sc_stack_blocks_a1_speedup_r1",
+      "wall_total_s": 295,
+      "episodes": 25,
+      "successes": 6,
+      "score": 31.2,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 108.1,
+       "1": 108.1,
+       "2": 108.1,
+       "3": 108.1,
+       "4": 108.1,
+       "5": 108.1,
+       "6": 108.1,
+       "7": 108.1,
+       "8": 108.1,
+       "9": 108.1,
+       "10": 203.5,
+       "11": 203.6,
+       "12": 203.6,
+       "13": 203.6,
+       "14": 203.6,
+       "15": 203.6,
+       "16": 203.6,
+       "17": 203.6,
+       "18": 203.6,
+       "19": 203.6,
+       "20": 293.2,
+       "21": 293.2,
+       "22": 293.2,
+       "23": 293.2,
+       "24": 293.2
+      },
+      "host": {
+       "samples": 30,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     },
+     {
+      "tag": "sc_stack_blocks_a1_speedup_r2",
+      "wall_total_s": 300,
+      "episodes": 25,
+      "successes": 4,
+      "score": 24.4,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 108.1,
+       "1": 108.1,
+       "2": 108.1,
+       "3": 108.1,
+       "4": 108.1,
+       "5": 108.1,
+       "6": 108.1,
+       "7": 108.1,
+       "8": 108.2,
+       "9": 108.2,
+       "10": 205.1,
+       "11": 205.1,
+       "12": 205.1,
+       "13": 205.1,
+       "14": 205.1,
+       "15": 205.1,
+       "16": 205.1,
+       "17": 205.1,
+       "18": 205.1,
+       "19": 205.1,
+       "20": 294.7,
+       "21": 294.7,
+       "22": 294.7,
+       "23": 294.7,
+       "24": 294.7
+      },
+      "host": {
+       "samples": 31,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     }
+    ]
+   }
+  },
+  {
    "task": "make_kong",
    "kind": "rigid, second robot (Franka)",
-   "official_s": 939,
-   "turbo_s": 396,
-   "legs": {
-    "upstream": {
-     "tag": "wl_make_kong_a1_upstream_r1",
-     "wall_total_s": 939,
-     "episodes": 25,
-     "successes": 4,
-     "score": 16.0,
-     "num_envs": "10",
-     "missing": [],
-     "host": {
-      "samples": 94,
-      "samples_with_foreign_cpu": 0,
-      "foreign": []
+   "num_envs": 10,
+   "official_s": 913,
+   "turbo_s": 397.5,
+   "runs": {
+    "upstream": [
+     {
+      "tag": "sc_make_kong_a1_upstream_r1",
+      "wall_total_s": 918,
+      "episodes": 25,
+      "successes": 6,
+      "score": 24.0,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 342.5,
+       "1": 342.7,
+       "2": 342.8,
+       "3": 342.9,
+       "4": 343.1,
+       "5": 343.3,
+       "6": 343.4,
+       "7": 343.6,
+       "8": 343.7,
+       "9": 343.8,
+       "10": 657.2,
+       "11": 657.3,
+       "12": 657.4,
+       "13": 657.6,
+       "14": 657.7,
+       "15": 657.8,
+       "16": 658.0,
+       "17": 658.2,
+       "18": 658.4,
+       "19": 658.5,
+       "20": 911.1,
+       "21": 911.2,
+       "22": 911.4,
+       "23": 911.5,
+       "24": 911.6
+      },
+      "host": {
+       "samples": 92,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     },
+     {
+      "tag": "sc_make_kong_a1_upstream_r2",
+      "wall_total_s": 908,
+      "episodes": 25,
+      "successes": 7,
+      "score": 28.0,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 349.1,
+       "1": 349.3,
+       "2": 349.4,
+       "3": 349.5,
+       "4": 349.7,
+       "5": 349.8,
+       "6": 349.9,
+       "7": 350.1,
+       "8": 350.2,
+       "9": 350.3,
+       "10": 653.2,
+       "11": 653.3,
+       "12": 653.5,
+       "13": 653.6,
+       "14": 653.8,
+       "15": 653.9,
+       "16": 654.1,
+       "17": 654.3,
+       "18": 654.4,
+       "19": 654.5,
+       "20": 905.7,
+       "21": 905.9,
+       "22": 906.0,
+       "23": 906.2,
+       "24": 906.3
+      },
+      "host": {
+       "samples": 91,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
      }
-    },
-    "speedup": {
-     "tag": "wl_make_kong_a1_speedup_r1",
-     "wall_total_s": 396,
-     "episodes": 25,
-     "successes": 7,
-     "score": 28.0,
-     "num_envs": "10",
-     "missing": [],
-     "host": {
-      "samples": 40,
-      "samples_with_foreign_cpu": 0,
-      "foreign": []
+    ],
+    "speedup": [
+     {
+      "tag": "sc_make_kong_a1_speedup_r1",
+      "wall_total_s": 400,
+      "episodes": 25,
+      "successes": 6,
+      "score": 24.0,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 142.3,
+       "1": 142.3,
+       "2": 142.3,
+       "3": 142.3,
+       "4": 142.3,
+       "5": 142.3,
+       "6": 142.3,
+       "7": 142.3,
+       "8": 142.3,
+       "9": 142.3,
+       "10": 276.5,
+       "11": 276.5,
+       "12": 276.5,
+       "13": 276.5,
+       "14": 276.6,
+       "15": 276.6,
+       "16": 276.6,
+       "17": 276.6,
+       "18": 276.6,
+       "19": 276.6,
+       "20": 395.5,
+       "21": 395.5,
+       "22": 395.5,
+       "23": 395.5,
+       "24": 395.5
+      },
+      "host": {
+       "samples": 40,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     },
+     {
+      "tag": "sc_make_kong_a1_speedup_r2",
+      "wall_total_s": 395,
+      "episodes": 25,
+      "successes": 6,
+      "score": 24.0,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 142.3,
+       "1": 142.3,
+       "2": 142.3,
+       "3": 142.3,
+       "4": 142.3,
+       "5": 142.3,
+       "6": 142.3,
+       "7": 142.3,
+       "8": 142.3,
+       "9": 142.3,
+       "10": 273.6,
+       "11": 273.6,
+       "12": 273.6,
+       "13": 273.6,
+       "14": 273.6,
+       "15": 273.6,
+       "16": 273.6,
+       "17": 273.6,
+       "18": 273.6,
+       "19": 273.6,
+       "20": 391.5,
+       "21": 391.5,
+       "22": 391.5,
+       "23": 391.5,
+       "24": 391.5
+      },
+      "host": {
+       "samples": 40,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
      }
-    }
+    ]
    }
   },
   {
    "task": "pick_from_conveyor_by_image",
    "kind": "moving conveyor",
-   "official_s": 943,
-   "turbo_s": 450,
-   "legs": {
-    "upstream": {
-     "tag": "wl_pick_from_conveyor_by_image_a1_upstream_r1",
-     "wall_total_s": 943,
-     "episodes": 25,
-     "successes": 0,
-     "score": 0.0,
-     "num_envs": "10",
-     "missing": [],
-     "host": {
-      "samples": 94,
-      "samples_with_foreign_cpu": 9,
-      "foreign": [
-       "python"
-      ]
+   "num_envs": 10,
+   "official_s": 911,
+   "turbo_s": 443.5,
+   "runs": {
+    "upstream": [
+     {
+      "tag": "sc_pick_from_conveyor_by_image_a1_upstream_r1",
+      "wall_total_s": 908,
+      "episodes": 25,
+      "successes": 0,
+      "score": 0.0,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 349.7,
+       "1": 349.8,
+       "2": 349.9,
+       "3": 350.0,
+       "4": 350.1,
+       "5": 350.2,
+       "6": 350.3,
+       "7": 350.4,
+       "8": 350.5,
+       "9": 350.6,
+       "10": 664.8,
+       "11": 664.9,
+       "12": 665.0,
+       "13": 665.1,
+       "14": 665.2,
+       "15": 665.3,
+       "16": 665.4,
+       "17": 665.5,
+       "18": 665.6,
+       "19": 665.7,
+       "20": 906.2,
+       "21": 906.3,
+       "22": 906.4,
+       "23": 906.5,
+       "24": 906.6
+      },
+      "host": {
+       "samples": 91,
+       "samples_with_foreign_cpu": 1,
+       "foreign": [
+        "python3"
+       ]
+      }
+     },
+     {
+      "tag": "sc_pick_from_conveyor_by_image_a1_upstream_r2",
+      "wall_total_s": 914,
+      "episodes": 25,
+      "successes": 0,
+      "score": 0.0,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 352.0,
+       "1": 352.0,
+       "2": 352.1,
+       "3": 352.2,
+       "4": 352.4,
+       "5": 352.5,
+       "6": 352.6,
+       "7": 352.7,
+       "8": 352.8,
+       "9": 352.9,
+       "10": 665.9,
+       "11": 666.0,
+       "12": 666.1,
+       "13": 666.2,
+       "14": 666.3,
+       "15": 666.4,
+       "16": 666.5,
+       "17": 666.6,
+       "18": 666.7,
+       "19": 666.8,
+       "20": 907.9,
+       "21": 907.9,
+       "22": 908.0,
+       "23": 908.2,
+       "24": 908.2
+      },
+      "host": {
+       "samples": 92,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
      }
-    },
-    "speedup": {
-     "tag": "wl_pick_from_conveyor_by_image_a1_speedup_r1",
-     "wall_total_s": 450,
-     "episodes": 25,
-     "successes": 0,
-     "score": 0.0,
-     "num_envs": "10",
-     "missing": [],
-     "host": {
-      "samples": 46,
-      "samples_with_foreign_cpu": 0,
-      "foreign": []
+    ],
+    "speedup": [
+     {
+      "tag": "sc_pick_from_conveyor_by_image_a1_speedup_r1",
+      "wall_total_s": 441,
+      "episodes": 25,
+      "successes": 0,
+      "score": 0.0,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 157.3,
+       "1": 157.3,
+       "2": 157.3,
+       "3": 157.3,
+       "4": 157.3,
+       "5": 157.3,
+       "6": 157.3,
+       "7": 157.3,
+       "8": 157.3,
+       "9": 157.3,
+       "10": 301.1,
+       "11": 301.1,
+       "12": 301.1,
+       "13": 301.1,
+       "14": 301.1,
+       "15": 301.1,
+       "16": 301.1,
+       "17": 301.1,
+       "18": 301.1,
+       "19": 301.1,
+       "20": 434.6,
+       "21": 434.6,
+       "22": 434.6,
+       "23": 434.6,
+       "24": 434.6
+      },
+      "host": {
+       "samples": 44,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     },
+     {
+      "tag": "sc_pick_from_conveyor_by_image_a1_speedup_r2",
+      "wall_total_s": 446,
+      "episodes": 25,
+      "successes": 0,
+      "score": 0.0,
+      "num_envs": "10",
+      "missing": [],
+      "episode_done_s": {
+       "0": 158.2,
+       "1": 158.2,
+       "2": 158.2,
+       "3": 158.3,
+       "4": 158.3,
+       "5": 158.3,
+       "6": 158.3,
+       "7": 158.3,
+       "8": 158.3,
+       "9": 158.3,
+       "10": 307.5,
+       "11": 307.5,
+       "12": 307.5,
+       "13": 307.5,
+       "14": 307.5,
+       "15": 307.5,
+       "16": 307.5,
+       "17": 307.5,
+       "18": 307.5,
+       "19": 307.5,
+       "20": 441.8,
+       "21": 441.8,
+       "22": 441.8,
+       "23": 441.8,
+       "24": 441.8
+      },
+      "host": {
+       "samples": 45,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
      }
-    }
-   },
-   "note": "During the official leg's third batch (about 3 min) another user's python processes used up to 5.6 cores (host load 3-4 of 32); that batch took 0.80 of the second batch's time, the same ratio as stack_blocks' official runs (168/211 s), so no slowdown is visible."
+    ]
+   }
   },
   {
    "task": "pour_liquid_into_cup_random",
    "kind": "fluid (particles), cluttered",
-   "official_s": 1098,
-   "turbo_s": 805,
-   "legs": {
-    "upstream": {
-     "tag": "wl_pour_liquid_into_cup_random_a2_upstream_r1",
-     "wall_total_s": 1098,
-     "episodes": 25,
-     "successes": 2,
-     "score": 8.0,
-     "num_envs": "5",
-     "missing": [],
-     "host": {
-      "samples": 110,
-      "samples_with_foreign_cpu": 0,
-      "foreign": []
+   "num_envs": 5,
+   "official_s": 1008.5,
+   "turbo_s": 753,
+   "runs": {
+    "upstream": [
+     {
+      "tag": "sc_pour_liquid_into_cup_random_a1_upstream_r1",
+      "wall_total_s": 1018,
+      "episodes": 25,
+      "successes": 2,
+      "score": 8.0,
+      "num_envs": "5",
+      "missing": [],
+      "episode_done_s": {
+       "0": 235.0,
+       "1": 235.1,
+       "2": 235.2,
+       "3": 235.4,
+       "4": 235.5,
+       "5": 431.2,
+       "6": 431.3,
+       "7": 431.4,
+       "8": 431.5,
+       "9": 431.7,
+       "10": 625.9,
+       "11": 626.0,
+       "12": 626.1,
+       "13": 626.3,
+       "14": 626.4,
+       "15": 819.1,
+       "16": 819.2,
+       "17": 819.3,
+       "18": 819.4,
+       "19": 819.5,
+       "20": 1012.0,
+       "21": 1012.1,
+       "22": 1012.3,
+       "23": 1012.4,
+       "24": 1012.5
+      },
+      "host": {
+       "samples": 102,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     },
+     {
+      "tag": "sc_pour_liquid_into_cup_random_a1_upstream_r2",
+      "wall_total_s": 999,
+      "episodes": 25,
+      "successes": 3,
+      "score": 12.0,
+      "num_envs": "5",
+      "missing": [],
+      "episode_done_s": {
+       "0": 231.3,
+       "1": 231.5,
+       "2": 231.6,
+       "3": 231.7,
+       "4": 231.8,
+       "5": 427.6,
+       "6": 427.7,
+       "7": 427.8,
+       "8": 428.0,
+       "9": 428.1,
+       "10": 617.4,
+       "11": 617.6,
+       "12": 617.7,
+       "13": 617.9,
+       "14": 618.0,
+       "15": 807.4,
+       "16": 807.5,
+       "17": 807.6,
+       "18": 807.8,
+       "19": 807.9,
+       "20": 996.6,
+       "21": 996.7,
+       "22": 996.8,
+       "23": 996.9,
+       "24": 997.0
+      },
+      "host": {
+       "samples": 100,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
      }
-    },
-    "speedup": {
-     "tag": "wl_pour_liquid_into_cup_random_a2_speedup_r1",
-     "wall_total_s": 805,
-     "episodes": 25,
-     "successes": 4,
-     "score": 16.0,
-     "num_envs": "5",
-     "missing": [],
-     "host": {
-      "samples": 80,
-      "samples_with_foreign_cpu": 0,
-      "foreign": []
+    ],
+    "speedup": [
+     {
+      "tag": "sc_pour_liquid_into_cup_random_a1_speedup_r1",
+      "wall_total_s": 750,
+      "episodes": 25,
+      "successes": 1,
+      "score": 4.0,
+      "num_envs": "5",
+      "missing": [],
+      "episode_done_s": {
+       "0": 165.6,
+       "1": 165.7,
+       "2": 165.7,
+       "3": 165.7,
+       "4": 165.7,
+       "5": 313.6,
+       "6": 313.6,
+       "7": 313.6,
+       "8": 313.6,
+       "9": 313.6,
+       "10": 460.3,
+       "11": 460.3,
+       "12": 460.3,
+       "13": 460.3,
+       "14": 460.3,
+       "15": 604.8,
+       "16": 604.8,
+       "17": 604.8,
+       "18": 604.8,
+       "19": 604.8,
+       "20": 748.4,
+       "21": 748.4,
+       "22": 748.4,
+       "23": 748.4,
+       "24": 748.4
+      },
+      "host": {
+       "samples": 75,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     },
+     {
+      "tag": "sc_pour_liquid_into_cup_random_a1_speedup_r2",
+      "wall_total_s": 756,
+      "episodes": 25,
+      "successes": 1,
+      "score": 4.0,
+      "num_envs": "5",
+      "missing": [],
+      "episode_done_s": {
+       "0": 163.4,
+       "1": 163.4,
+       "2": 163.5,
+       "3": 163.5,
+       "4": 163.5,
+       "5": 312.3,
+       "6": 312.3,
+       "7": 312.3,
+       "8": 312.3,
+       "9": 312.3,
+       "10": 461.1,
+       "11": 461.1,
+       "12": 461.1,
+       "13": 461.1,
+       "14": 461.1,
+       "15": 605.9,
+       "16": 605.9,
+       "17": 605.9,
+       "18": 605.9,
+       "19": 605.9,
+       "20": 749.5,
+       "21": 749.5,
+       "22": 749.5,
+       "23": 749.5,
+       "24": 749.5
+      },
+      "host": {
+       "samples": 76,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
      }
-    }
-   },
-   "note": "5 environments per batch (RoboDojo's cap for *_random tasks) in both arms; particles are written back to USD on the last substep of every action (RDTURBO_USD_LAST_MODE=auto). The first attempt was stopped when another GPU process appeared and is not used."
-  },
-  {
-   "task": "stack_blocks",
-   "kind": "rigid blocks",
-   "official_s": 636,
-   "turbo_s": 299,
-   "source": "docs/data/benchmark.json stack_blocks (2 reps each)",
-   "note": "mean of 2 alternating runs per arm (638/634 s and 301/296 s)"
+    ]
+   }
   }
  ],
  "workloads_meta": {
   "layouts": 25,
   "seed": 0,
-  "date": "2026-09-28 (stack_blocks: 2026-09-27)",
-  "code": "pre-release build of 2026-09-28",
-  "runs": "1 run per arm (stack_blocks: mean of 2)",
-  "how": "scripts/reproduce_benchmark.sh --task <task> --layouts 25 --reps 1 --legs upstream,speedup; num_envs 5 for *_random"
+  "date": "2026-09-29",
+  "code": "0.1.0a1 (commit eba171e)",
+  "runs": "2 runs per arm, order official, Turbo, Turbo, official; times are means of the 2 runs",
+  "jax_cache": "same JAX compilation cache in both arms (--same-jax-cache)",
+  "how": "scripts/reproduce_benchmark.sh --task <task> --layouts 25 --reps 2 --legs upstream,speedup --same-jax-cache; --num-envs 5 for *_random, 10 otherwise",
+  "gpu_gate": "before each task 5 checks 60 s apart (about 4 min), each with no other compute process (nvidia-smi --query-compute-apps), under 3000 MiB in use and host 1-min load below 4; during the task other compute processes checked every 30 s",
+  "host": "every 10 s: 1-min load average (median 1.77, 90th percentile 3.66, max 8.52 of 32 threads over the 16 legs, eval included) and non-root processes whose lifetime-average %CPU in ps exceeds 20% (runs[].host; one hit: one core, an analysis script of ours, 04:44 ET during the first official conveyor run)"
  },
  "scores_pooled": {
+  "pairs": 13,
+  "tasks": 4,
+  "paired_layouts": 325,
+  "official_successes": 39,
+  "turbo_successes": 40,
+  "official_score": 14.5,
+  "turbo_score": 14.8,
+  "score_diff_pts": 0.2,
+  "ci95_pts": [
+   -3.0,
+   3.4
+  ],
+  "wins_losses_ties": [
+   27,
+   27,
+   271
+  ],
+  "mcnemar": {
+   "only_turbo": 16,
+   "only_official": 15,
+   "p": 1.0
+  },
+  "mde80_pts": 4.6,
+  "bootstrap": "20000 resamples, stratified by pair",
+  "per_pair_diff_pts": {
+   "stack_blocks 2026-09-27 r1": -3.4,
+   "stack_blocks 2026-09-27 r2": -13.2,
+   "make_kong 2026-09-28": 12.0,
+   "pick_from_conveyor_by_image 2026-09-28": 0.0,
+   "pour_liquid_into_cup_random 2026-09-28": 8.0,
+   "stack_blocks 2026-09-29 r1": 12.0,
+   "stack_blocks 2026-09-29 r2": 3.4,
+   "make_kong 2026-09-29 r1": 0.0,
+   "make_kong 2026-09-29 r2": -4.0,
+   "pick_from_conveyor_by_image 2026-09-29 r1": 0.0,
+   "pick_from_conveyor_by_image 2026-09-29 r2": 0.0,
+   "pour_liquid_into_cup_random 2026-09-29 r1": -4.0,
+   "pour_liquid_into_cup_random 2026-09-29 r2": -8.0
+  },
+  "pairs_in_order": [
+   "bench_v010a1_upstream_r1 vs bench_v010a1_speedup_r1",
+   "bench_v010a1_upstream_r2 vs bench_v010a1_speedup_r2",
+   "wl_make_kong_a1_upstream_r1 vs wl_make_kong_a1_speedup_r1",
+   "wl_pick_from_conveyor_by_image_a1_upstream_r1 vs wl_pick_from_conveyor_by_image_a1_speedup_r1",
+   "wl_pour_liquid_into_cup_random_a2_upstream_r1 vs wl_pour_liquid_into_cup_random_a2_speedup_r1",
+   "sc_stack_blocks_a1_upstream_r1 vs sc_stack_blocks_a1_speedup_r1",
+   "sc_stack_blocks_a1_upstream_r2 vs sc_stack_blocks_a1_speedup_r2",
+   "sc_make_kong_a1_upstream_r1 vs sc_make_kong_a1_speedup_r1",
+   "sc_make_kong_a1_upstream_r2 vs sc_make_kong_a1_speedup_r2",
+   "sc_pick_from_conveyor_by_image_a1_upstream_r1 vs sc_pick_from_conveyor_by_image_a1_speedup_r1",
+   "sc_pick_from_conveyor_by_image_a1_upstream_r2 vs sc_pick_from_conveyor_by_image_a1_speedup_r2",
+   "sc_pour_liquid_into_cup_random_a1_upstream_r1 vs sc_pour_liquid_into_cup_random_a1_speedup_r1",
+   "sc_pour_liquid_into_cup_random_a1_upstream_r2 vs sc_pour_liquid_into_cup_random_a1_speedup_r2"
+  ],
+  "ci_note": "bootstrap seed 0 over the pairs in this order (paired_compare A1 B1 A2 B2 ...); another order moves the CI bounds by about 0.1",
+  "note": "every official-vs-Turbo pair run so far (2026-09-27: 2 and 2026-09-28: 3, pre-release builds with the JAX cache warm in the Turbo arm only; 2026-09-29: 8 with 0.1.0a1 and the same cache in both arms), following the all-available-pairs rule of the 2026-09-28 comparison; same-code repeat on stack_blocks (2026-09-27): +12.0 [+2.4, +23.8]"
+ },
+ "per_step_ms": {
+  "source": "span traces of the 2026-09-27 stack_blocks benchmark runs (harness and speedup arms; 2 repetitions x 3 batches each; the unpatched arm has no tracer); mean over batches of the per-step span means",
+  "harness": {
+   "sim_step": 147.7,
+   "obs": 112.3,
+   "render": 81.9,
+   "reset_s": 18.6
+  },
+  "speedup": {
+   "sim_step": 50.6,
+   "obs": 80.4,
+   "render": 80.4,
+   "reset_s": 16.3
+  }
+ },
+ "workloads_2026_09_28": {
+  "meta": {
+   "layouts": 25,
+   "seed": 0,
+   "date": "2026-09-28 (stack_blocks: 2026-09-27)",
+   "code": "pre-release build of 2026-09-28",
+   "runs": "1 run per arm (stack_blocks: mean of 2)",
+   "how": "scripts/reproduce_benchmark.sh --task <task> --layouts 25 --reps 1 --legs upstream,speedup; num_envs 5 for *_random"
+  },
+  "rows": [
+   {
+    "task": "make_kong",
+    "kind": "rigid, second robot (Franka)",
+    "official_s": 939,
+    "turbo_s": 396,
+    "legs": {
+     "upstream": {
+      "tag": "wl_make_kong_a1_upstream_r1",
+      "wall_total_s": 939,
+      "episodes": 25,
+      "successes": 4,
+      "score": 16.0,
+      "num_envs": "10",
+      "missing": [],
+      "host": {
+       "samples": 94,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     },
+     "speedup": {
+      "tag": "wl_make_kong_a1_speedup_r1",
+      "wall_total_s": 396,
+      "episodes": 25,
+      "successes": 7,
+      "score": 28.0,
+      "num_envs": "10",
+      "missing": [],
+      "host": {
+       "samples": 40,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     }
+    }
+   },
+   {
+    "task": "pick_from_conveyor_by_image",
+    "kind": "moving conveyor",
+    "official_s": 943,
+    "turbo_s": 450,
+    "legs": {
+     "upstream": {
+      "tag": "wl_pick_from_conveyor_by_image_a1_upstream_r1",
+      "wall_total_s": 943,
+      "episodes": 25,
+      "successes": 0,
+      "score": 0.0,
+      "num_envs": "10",
+      "missing": [],
+      "host": {
+       "samples": 94,
+       "samples_with_foreign_cpu": 9,
+       "foreign": [
+        "python"
+       ]
+      }
+     },
+     "speedup": {
+      "tag": "wl_pick_from_conveyor_by_image_a1_speedup_r1",
+      "wall_total_s": 450,
+      "episodes": 25,
+      "successes": 0,
+      "score": 0.0,
+      "num_envs": "10",
+      "missing": [],
+      "host": {
+       "samples": 46,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     }
+    },
+    "note": "During the official leg's third batch (about 3 min) another user's python processes used up to 5.6 cores (host load 3-4 of 32); that batch took 0.80 of the second batch's time, the same ratio as stack_blocks' official runs (168/211 s), so no slowdown is visible."
+   },
+   {
+    "task": "pour_liquid_into_cup_random",
+    "kind": "fluid (particles), cluttered",
+    "official_s": 1098,
+    "turbo_s": 805,
+    "legs": {
+     "upstream": {
+      "tag": "wl_pour_liquid_into_cup_random_a2_upstream_r1",
+      "wall_total_s": 1098,
+      "episodes": 25,
+      "successes": 2,
+      "score": 8.0,
+      "num_envs": "5",
+      "missing": [],
+      "host": {
+       "samples": 110,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     },
+     "speedup": {
+      "tag": "wl_pour_liquid_into_cup_random_a2_speedup_r1",
+      "wall_total_s": 805,
+      "episodes": 25,
+      "successes": 4,
+      "score": 16.0,
+      "num_envs": "5",
+      "missing": [],
+      "host": {
+       "samples": 80,
+       "samples_with_foreign_cpu": 0,
+       "foreign": []
+      }
+     }
+    },
+    "note": "5 environments per batch (RoboDojo's cap for *_random tasks) in both arms; particles are written back to USD on the last substep of every action (RDTURBO_USD_LAST_MODE=auto). The first attempt was stopped when another GPU process appeared and is not used."
+   },
+   {
+    "task": "stack_blocks",
+    "kind": "rigid blocks",
+    "official_s": 636,
+    "turbo_s": 299,
+    "source": "docs/data/benchmark.json stack_blocks (2 reps each)",
+    "note": "mean of 2 alternating runs per arm (638/634 s and 301/296 s)"
+   }
+  ]
+ },
+ "hero": {
+  "task": "stack_blocks",
+  "layouts": 25,
+  "date": "2026-09-29",
+  "source": "workloads (stack_blocks row)",
+  "jax_cache": "same in both arms",
+  "runs": {
+   "upstream": [
+    {
+     "tag": "sc_stack_blocks_a1_upstream_r1",
+     "wall_total_s": 641,
+     "episode_done_s": {
+      "0": 255.3,
+      "1": 255.4,
+      "2": 255.5,
+      "3": 255.7,
+      "4": 255.8,
+      "5": 256.0,
+      "6": 256.1,
+      "7": 256.3,
+      "8": 256.4,
+      "9": 256.5,
+      "10": 471.9,
+      "11": 472.0,
+      "12": 472.2,
+      "13": 472.3,
+      "14": 472.4,
+      "15": 472.6,
+      "16": 472.7,
+      "17": 472.9,
+      "18": 473.0,
+      "19": 473.1,
+      "20": 636.0,
+      "21": 636.2,
+      "22": 636.3,
+      "23": 636.5,
+      "24": 636.6
+     }
+    },
+    {
+     "tag": "sc_stack_blocks_a1_upstream_r2",
+     "wall_total_s": 638,
+     "episode_done_s": {
+      "0": 250.0,
+      "1": 250.1,
+      "2": 250.3,
+      "3": 250.4,
+      "4": 250.6,
+      "5": 250.7,
+      "6": 250.9,
+      "7": 251.0,
+      "8": 251.2,
+      "9": 251.3,
+      "10": 463.1,
+      "11": 463.3,
+      "12": 463.4,
+      "13": 463.6,
+      "14": 463.7,
+      "15": 463.9,
+      "16": 464.0,
+      "17": 464.2,
+      "18": 464.4,
+      "19": 464.5,
+      "20": 632.9,
+      "21": 633.0,
+      "22": 633.1,
+      "23": 633.3,
+      "24": 633.4
+     }
+    }
+   ],
+   "speedup": [
+    {
+     "tag": "sc_stack_blocks_a1_speedup_r1",
+     "wall_total_s": 295,
+     "episode_done_s": {
+      "0": 108.1,
+      "1": 108.1,
+      "2": 108.1,
+      "3": 108.1,
+      "4": 108.1,
+      "5": 108.1,
+      "6": 108.1,
+      "7": 108.1,
+      "8": 108.1,
+      "9": 108.1,
+      "10": 203.5,
+      "11": 203.6,
+      "12": 203.6,
+      "13": 203.6,
+      "14": 203.6,
+      "15": 203.6,
+      "16": 203.6,
+      "17": 203.6,
+      "18": 203.6,
+      "19": 203.6,
+      "20": 293.2,
+      "21": 293.2,
+      "22": 293.2,
+      "23": 293.2,
+      "24": 293.2
+     }
+    },
+    {
+     "tag": "sc_stack_blocks_a1_speedup_r2",
+     "wall_total_s": 300,
+     "episode_done_s": {
+      "0": 108.1,
+      "1": 108.1,
+      "2": 108.1,
+      "3": 108.1,
+      "4": 108.1,
+      "5": 108.1,
+      "6": 108.1,
+      "7": 108.1,
+      "8": 108.2,
+      "9": 108.2,
+      "10": 205.1,
+      "11": 205.1,
+      "12": 205.1,
+      "13": 205.1,
+      "14": 205.1,
+      "15": 205.1,
+      "16": 205.1,
+      "17": 205.1,
+      "18": 205.1,
+      "19": 205.1,
+      "20": 294.7,
+      "21": 294.7,
+      "22": 294.7,
+      "23": 294.7,
+      "24": 294.7
+     }
+    }
+   ]
+  }
+ },
+ "scores_per_task": {
+  "stack_blocks": {
+   "pairs": 4,
+   "tasks": 1,
+   "paired_layouts": 100,
+   "official_successes": 15,
+   "turbo_successes": 15,
+   "official_score": 23.2,
+   "turbo_score": 22.9,
+   "score_diff_pts": -0.3,
+   "ci95_pts": [
+    -6.4,
+    5.6
+   ],
+   "wins_losses_ties": [
+    17,
+    18,
+    65
+   ],
+   "mcnemar": {
+    "only_turbo": 6,
+    "only_official": 6,
+    "p": 1.0
+   },
+   "mde80_pts": 8.9,
+   "bootstrap": "20000 resamples, stratified by pair"
+  },
+  "make_kong": {
+   "pairs": 3,
+   "tasks": 1,
+   "paired_layouts": 75,
+   "official_successes": 17,
+   "turbo_successes": 19,
+   "official_score": 22.7,
+   "turbo_score": 25.3,
+   "score_diff_pts": 2.7,
+   "ci95_pts": [
+    -6.7,
+    12.0
+   ],
+   "wins_losses_ties": [
+    8,
+    6,
+    61
+   ],
+   "mcnemar": {
+    "only_turbo": 8,
+    "only_official": 6,
+    "p": 0.791
+   },
+   "mde80_pts": 14.0,
+   "bootstrap": "20000 resamples, stratified by pair"
+  },
+  "pick_from_conveyor_by_image": {
+   "pairs": 3,
+   "tasks": 1,
+   "paired_layouts": 75,
+   "official_successes": 0,
+   "turbo_successes": 0,
+   "official_score": 0.0,
+   "turbo_score": 0.0,
+   "score_diff_pts": 0.0,
+   "ci95_pts": [
+    0.0,
+    0.0
+   ],
+   "wins_losses_ties": [
+    0,
+    0,
+    75
+   ],
+   "mcnemar": {
+    "only_turbo": 0,
+    "only_official": 0,
+    "p": 1.0
+   },
+   "mde80_pts": 0.0,
+   "bootstrap": "20000 resamples, stratified by pair"
+  },
+  "pour_liquid_into_cup_random": {
+   "pairs": 3,
+   "tasks": 1,
+   "paired_layouts": 75,
+   "official_successes": 7,
+   "turbo_successes": 6,
+   "official_score": 9.3,
+   "turbo_score": 8.0,
+   "score_diff_pts": -1.3,
+   "ci95_pts": [
+    -6.7,
+    4.0
+   ],
+   "wins_losses_ties": [
+    2,
+    3,
+    70
+   ],
+   "mcnemar": {
+    "only_turbo": 2,
+    "only_official": 3,
+    "p": 1.0
+   },
+   "mde80_pts": 8.4,
+   "bootstrap": "20000 resamples, stratified by pair"
+  }
+ },
+ "scores_pooled_2026_09_29": {
+  "pairs": 8,
+  "tasks": 4,
+  "paired_layouts": 200,
+  "official_successes": 24,
+  "turbo_successes": 24,
+  "official_score": 14.0,
+  "turbo_score": 13.9,
+  "score_diff_pts": -0.1,
+  "ci95_pts": [
+   -4.2,
+   4.0
+  ],
+  "wins_losses_ties": [
+   16,
+   14,
+   170
+  ],
+  "mcnemar": {
+   "only_turbo": 10,
+   "only_official": 10,
+   "p": 1.0
+  },
+  "mde80_pts": 6.0,
+  "bootstrap": "20000 resamples, stratified by pair",
+  "note": "only the 8 pairs of 2026-09-29 (0.1.0a1, same JAX cache in both arms)",
+  "pairs_in_order": [
+   "sc_stack_blocks_a1_upstream_r1 vs sc_stack_blocks_a1_speedup_r1",
+   "sc_stack_blocks_a1_upstream_r2 vs sc_stack_blocks_a1_speedup_r2",
+   "sc_make_kong_a1_upstream_r1 vs sc_make_kong_a1_speedup_r1",
+   "sc_make_kong_a1_upstream_r2 vs sc_make_kong_a1_speedup_r2",
+   "sc_pick_from_conveyor_by_image_a1_upstream_r1 vs sc_pick_from_conveyor_by_image_a1_speedup_r1",
+   "sc_pick_from_conveyor_by_image_a1_upstream_r2 vs sc_pick_from_conveyor_by_image_a1_speedup_r2",
+   "sc_pour_liquid_into_cup_random_a1_upstream_r1 vs sc_pour_liquid_into_cup_random_a1_speedup_r1",
+   "sc_pour_liquid_into_cup_random_a1_upstream_r2 vs sc_pour_liquid_into_cup_random_a1_speedup_r2"
+  ]
+ },
+ "scores_pooled_without_conveyor": {
+  "pairs": 10,
+  "tasks": 3,
+  "paired_layouts": 250,
+  "official_successes": 39,
+  "turbo_successes": 40,
+  "official_score": 18.9,
+  "turbo_score": 19.2,
+  "score_diff_pts": 0.3,
+  "ci95_pts": [
+   -3.8,
+   4.3
+  ],
+  "wins_losses_ties": [
+   27,
+   27,
+   196
+  ],
+  "mcnemar": {
+   "only_turbo": 16,
+   "only_official": 15,
+   "p": 1.0
+  },
+  "mde80_pts": 6.0,
+  "bootstrap": "20000 resamples, stratified by pair",
+  "note": "all pairs except pick_from_conveyor_by_image, which had no successes in either arm (75 ties)",
+  "pairs_in_order": [
+   "bench_v010a1_upstream_r1 vs bench_v010a1_speedup_r1",
+   "bench_v010a1_upstream_r2 vs bench_v010a1_speedup_r2",
+   "wl_make_kong_a1_upstream_r1 vs wl_make_kong_a1_speedup_r1",
+   "wl_pour_liquid_into_cup_random_a2_upstream_r1 vs wl_pour_liquid_into_cup_random_a2_speedup_r1",
+   "sc_stack_blocks_a1_upstream_r1 vs sc_stack_blocks_a1_speedup_r1",
+   "sc_stack_blocks_a1_upstream_r2 vs sc_stack_blocks_a1_speedup_r2",
+   "sc_make_kong_a1_upstream_r1 vs sc_make_kong_a1_speedup_r1",
+   "sc_make_kong_a1_upstream_r2 vs sc_make_kong_a1_speedup_r2",
+   "sc_pour_liquid_into_cup_random_a1_upstream_r1 vs sc_pour_liquid_into_cup_random_a1_speedup_r1",
+   "sc_pour_liquid_into_cup_random_a1_upstream_r2 vs sc_pour_liquid_into_cup_random_a1_speedup_r2"
+  ]
+ },
+ "scores_pooled_2026_09_28": {
   "pairs": 5,
   "tasks": 4,
   "paired_layouts": 125,
@@ -364,20 +1481,5 @@
    "pour_liquid_into_cup_random": 8.0
   },
   "note": "all available pairs; pooling chosen after the runs; same-code repeat on stack_blocks: +12.0 [+2.4, +23.8]"
- },
- "per_step_ms": {
-  "source": "span traces of the 2026-09-27 stack_blocks benchmark runs (harness and speedup arms; 2 repetitions x 3 batches each; the unpatched arm has no tracer); mean over batches of the per-step span means",
-  "harness": {
-   "sim_step": 147.7,
-   "obs": 112.3,
-   "render": 81.9,
-   "reset_s": 18.6
-  },
-  "speedup": {
-   "sim_step": 50.6,
-   "obs": 80.4,
-   "render": 80.4,
-   "reset_s": 16.3
-  }
  }
 }
