@@ -6,6 +6,8 @@
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![status: alpha](https://img.shields.io/badge/status-alpha-orange)](docs/STATUS.md)
 
+<img src="docs/img/race.gif" width="100%" alt="The same recorded actions replayed side by side on one RTX 5090, stack_blocks layout 8: every switch off finishes the episode in 1:44 wall clock, RoboDojo-Turbo in 0:35; identical motion (PhysX state bit-identical), shown at 15x speed; a replay runs no policy inference, full closed-loop evaluations are 1.4-2.4x faster">
+
 **Evaluate policies on [RoboDojo](https://github.com/RoboDojo-Benchmark/RoboDojo) 1.4–2.4× faster on the same
 machine, with the same physics and scoring code.** RoboDojo-Turbo patches your local RoboDojo checkout: tasks, official
 layouts, checkpoints, scoring code, physics, `dt` and render cadence stay as upstream; host-side overhead is removed, and

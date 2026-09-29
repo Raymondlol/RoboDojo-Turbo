@@ -92,3 +92,13 @@ during the conveyor task's official leg another user's processes used up to 5.6 
 official runs, so no slowdown is visible. The fluid task's first attempt was stopped when another GPU process appeared
 and is not used.
 
+## README race GIF
+
+`docs/img/race.gif` shows the 2026-09-27 `scripts/verify_physics.sh` replay legs (one closed-loop recording of
+`stack_blocks` official layouts 0-9, replayed with every switch off and with the speedup preset; PhysX state
+bit-identical) for layout 8, head camera. Each frame appears at the wall-clock time it was rendered (end of the k-th
+observation span after the episode started, from the span traces), played at 15x. Layout 8 finished after 104.8 s with
+every switch off and 35.6 s with the preset (2.9x); the whole batch took 207.0 s vs 73.9 s. A replay runs no policy
+inference and this counts the episode only, so the ratio is larger than the closed-loop ones above. Frame times:
+`docs/data/race.json`; generator: `scripts/make_race_gif.py`.
+
